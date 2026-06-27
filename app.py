@@ -202,3 +202,4 @@ if stud_file:
                     room_layouts[r_name] = pd.DataFrame(
                         grid, 
                         index=[f"Row {i+1}" for i in range(r_rows)], 
+                        columns=[f"Column {j+1}" for j in range(r_cols)]
