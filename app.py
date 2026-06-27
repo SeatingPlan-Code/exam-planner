@@ -194,4 +194,4 @@ if stud_file:
                         num_cols = len(col_sizes)
                         
                         grid = [["[ Empty ]" for _ in range(num_cols)] for _ in range(max_rows)]
-                        for c, size in enumerate(col_sizes):
+                        for c, size in enumerate(col_sizes)
