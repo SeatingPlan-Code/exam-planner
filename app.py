@@ -112,14 +112,10 @@ if stud_file:
                     for hall in halls:
                         h_name = hall['Room Name']
                         
-                        # Process comma-separated list cleanly
+                        # Safe parsing for row configs per column
                         raw_parts = hall['Column_Rows_Raw'].split(",")
-                        col_sizes = []
-                        for part in raw_parts:
-                            clean_part = part.strip()
-                            if clean_part.isdigit():
-                                col_sizes.append(int(clean_part))
-                                
+                        col_sizes = [int(p.strip()) for p in raw_parts if p.strip().isdigit()]
+                        
                         if not col_sizes:
                             col_sizes = [10, 10, 10, 10, 10]
                         
@@ -189,10 +185,13 @@ if stud_file:
                         r_name = room['Room Name']
                         
                         raw_parts = room['Column_Rows_Raw'].split(",")
-                        col_sizes = []
-                        for part in raw_parts:
-                            clean_part = part.strip()
-                            if clean_part.isdigit():
-                                col_sizes.append(int(clean_part))
-                                
+                        col_sizes = [int(p.strip()) for p in raw_parts if p.strip().isdigit()]
+                        
                         if not col_sizes:
+                            col_sizes = [6, 6, 6, 6, 6]
+                            
+                        max_rows = max(col_sizes)
+                        num_cols = len(col_sizes)
+                        
+                        grid = [["[ Empty ]" for _ in range(num_cols)] for _ in range(max_rows)]
+                        for c, size in enumerate(col_sizes):
