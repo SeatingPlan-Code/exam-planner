@@ -149,7 +149,7 @@ if stud_file:
                                 target_classes = valid_classes if valid_classes else available_classes
                                 
                                 if target_classes:
-                                    chosen_class = target_classes
+                                    chosen_class = target_classes[0]
                                     student = female_queues[chosen_class].pop(0)
                                     grid[r][c] = f"{student['Name']} (C-{chosen_class})"
                                     
