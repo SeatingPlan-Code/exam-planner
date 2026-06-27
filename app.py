@@ -111,12 +111,19 @@ if stud_file:
                     
                     for hall in halls:
                         h_name = hall['Room Name']
-                        try:
-                            col_sizes = [int(x.strip()) for x in hall['Column_Rows_Raw'].split(",") if x.strip().isdigit()]
-                        except Exception:
+                        
+                        # Process comma-separated list cleanly
+                        raw_parts = hall['Column_Rows_Raw'].split(",")
+                        col_sizes = []
+                        for part in raw_parts:
+                            clean_part = part.strip()
+                            if clean_part.isdigit():
+                                col_sizes.append(int(clean_part))
+                                
+                        if not col_sizes:
                             col_sizes = [10, 10, 10, 10, 10]
                         
-                        max_rows = max(col_sizes) if col_sizes else 0
+                        max_rows = max(col_sizes)
                         num_cols = len(col_sizes)
                         
                         grid = [["[ Empty ]" for _ in range(num_cols)] for _ in range(max_rows)]
@@ -142,7 +149,7 @@ if stud_file:
                                 target_classes = valid_classes if valid_classes else available_classes
                                 
                                 if target_classes:
-                                    chosen_class = target_classes[0]
+                                    chosen_class = target_classes
                                     student = female_queues[chosen_class].pop(0)
                                     grid[r][c] = f"{student['Name']} (C-{chosen_class})"
                                     
@@ -180,16 +187,12 @@ if stud_file:
                     
                     for room in classrooms:
                         r_name = room['Room Name']
-                        try:
-                            col_sizes = [int(x.strip()) for x in room['Column_Rows_Raw'].split(",") if x.strip().isdigit()]
-                        except Exception:
-                            col_sizes = [6, 6, 6, 6, 6]
-                            
-                        max_rows = max(col_sizes) if col_sizes else 0
-                        num_cols = len(col_sizes)
                         
-                        grid = [["[ Empty ]" for _ in range(num_cols)] for _ in range(max_rows)]
-                        for c, size in enumerate(col_sizes):
-                            for r in range(size, max_rows):
-                                grid[r][c] = "[ No Desk ]"
-                        
+                        raw_parts = room['Column_Rows_Raw'].split(",")
+                        col_sizes = []
+                        for part in raw_parts:
+                            clean_part = part.strip()
+                            if clean_part.isdigit():
+                                col_sizes.append(int(clean_part))
+                                
+                        if not col_sizes:
