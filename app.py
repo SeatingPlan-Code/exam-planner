@@ -103,7 +103,7 @@ if stud_file:
                 master_registry = []
                 room_layouts = {}
                 
-                # --- RULESET A: FEMALE SEATING (Assessment Hall - Variable Column Configurations) ---
+                # --- RULESET A: FEMALE SEATING (Assessment Hall) ---
                 halls = [r for r in st.session_state.managed_rooms if r["Type"] == "Hall"]
                 if not females.empty and halls:
                     female_classes = sorted(females['Class'].unique(), key=lambda x: int(x) if x.isdigit() else x)
@@ -111,23 +111,19 @@ if stud_file:
                     
                     for hall in halls:
                         h_name = hall['Room Name']
-                        # Parse comma-separated row sizes per column
                         try:
                             col_sizes = [int(x.strip()) for x in hall['Column_Rows_Raw'].split(",") if x.strip().isdigit()]
-                        except:
-                            st.error(f"⚠️ Invalid layout values in {h_name}. Defaulting to 5 columns of 10 rows.")
+                        except Exception:
                             col_sizes = [10, 10, 10, 10, 10]
                         
                         max_rows = max(col_sizes) if col_sizes else 0
                         num_cols = len(col_sizes)
                         
-                        # Generate base grid matrix layout filled with blockers for shorter columns
                         grid = [["[ Empty ]" for _ in range(num_cols)] for _ in range(max_rows)]
                         for c, size in enumerate(col_sizes):
                             for r in range(size, max_rows):
                                 grid[r][c] = "[ No Desk ]"
                         
-                        # Sequential distribution across available seats
                         for r in range(max_rows):
                             for c in range(num_cols):
                                 if grid[r][c] == "[ No Desk ]":
@@ -146,7 +142,7 @@ if stud_file:
                                 target_classes = valid_classes if valid_classes else available_classes
                                 
                                 if target_classes:
-                                    chosen_class = target_classes
+                                    chosen_class = target_classes[0]
                                     student = female_queues[chosen_class].pop(0)
                                     grid[r][c] = f"{student['Name']} (C-{chosen_class})"
                                     
@@ -170,7 +166,7 @@ if stud_file:
                             columns=[f"Table Column {j+1}" for j in range(num_cols)]
                         )
 
-                # --- RULESET B: MALE SEATING (Classrooms - Variable Column Configurations) ---
+                # --- RULESET B: MALE SEATING (Classrooms) ---
                 classrooms = [r for r in st.session_state.managed_rooms if r["Type"] == "Classroom"]
                 if not males.empty and classrooms:
                     male_classes = sorted(males['Class'].unique(), key=lambda x: int(x) if x.isdigit() else x)
@@ -186,7 +182,14 @@ if stud_file:
                         r_name = room['Room Name']
                         try:
                             col_sizes = [int(x.strip()) for x in room['Column_Rows_Raw'].split(",") if x.strip().isdigit()]
-                        except:
+                        except Exception:
                             col_sizes = [6, 6, 6, 6, 6]
                             
                         max_rows = max(col_sizes) if col_sizes else 0
+                        num_cols = len(col_sizes)
+                        
+                        grid = [["[ Empty ]" for _ in range(num_cols)] for _ in range(max_rows)]
+                        for c, size in enumerate(col_sizes):
+                            for r in range(size, max_rows):
+                                grid[r][c] = "[ No Desk ]"
+                        
